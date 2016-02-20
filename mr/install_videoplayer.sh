@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Сашин скрипт по установке видеоплеера
+
 /usr/bin/stopvideo
 mkdir /root/backup
 mv /home/pi/.config/autostart/video.desktop /root/backup/
@@ -13,12 +15,6 @@ rm -rf /home/pi/videoplayer/
 mv videoplayer/ /home/pi/videoplayer/
 echo "cd /home/pi/videoplayer/" >> /home/pi/.bashrc
 echo "./videoplayer" >> /home/pi/.bashrc
-
-sed -i 's/^1:2345/#1:2345/' /etc/inittab
-sed -i '/1:2345/a \1:2345:respawn:\/bin\/login\ -f\ pi\ tty1\ <\/dev\/tty1\ >\/dev\/tty1\ 2>&1' /etc/inittab
-
-sed -i 's/^\(.\)/f1-\1/' /etc/hostname
-
 cat install_videoplayer.sh | grep "# " | grep -v "grep"
 
 # Дополнительно в raspi-config :

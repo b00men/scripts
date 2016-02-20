@@ -1,4 +1,8 @@
 #!/bin/sh
+
+# Старый плохой скрипт установки нового трафика на голую машину
+# todo: Объединить с new_traffic.sh и auto_install_old_dexp
+
 uservpn=login
 passvpn=password
 export PATH=$PATH:/usr/bin/:/usr/sbin/
@@ -21,5 +25,7 @@ echo "# Secrets for authentication using CHAP" > /etc/ppp/chap-secrets
 echo "# client	server	secret			IP addresses" >> /etc/ppp/chap-secrets
 echo "$uservpn	PPTP	$passvpn" >> /etc/ppp/chap-secrets
 sed -i "s/login/$uservpn/" /etc/ppp/peers/head
+
+# Один из способов размьютить и поднять мастер, требует доработки
 #/usr/bin/amixer -q sset Master playback 54 && /usr/sbin/alsactl store
-echo check alsamixer & alsactl store
+echo "check alsamixer & alsactl store"

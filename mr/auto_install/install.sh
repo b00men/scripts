@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Скрипт автоматической подготовки серверов,
+# по типу dexp неттопов сразу после установки debian.
+# Очень сырой, только зачатки.
+# Писался для старого трафика. Актуаьно переписать под новый.
+
 if [[ `whoami` != "root" ]]
 then
 	echo You need to be root to perform this command. 
@@ -17,9 +22,10 @@ expect sshrooton.exp $SERV_HOST $SERV_USER $SERV_PASS $SERV_RPASS
 
 sleep 5
 
+# Установка старого трафика. Актуально переписать эту часть
+# и client_old_dexp_install.sh под новый трафик.
 ssh $SERV_HOST 'apt-get update && apt-get install -y rsync'
 rsync -avr --progress --exclude "- authorized_keys" /home/server/chroot/ $SERV_HOST:/
 
 scp client_old_dexp_install.sh $SERV_HOST:~/
-
 ssh $SERV_HOST 'chmod +x client_old_dexp_install.sh && ./client_old_dexp_install.sh'
