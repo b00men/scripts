@@ -1,0 +1,45 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          svnserve
+# Required-Start:    $local_fs $syslog $remote_fs
+# Required-Stop:     $local_fs $syslog $remote_fs
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start svnserve
+### END INIT INFO
+
+# Author: Nikita Shchipachev <shchipachevnm@gmail.com>
+
+
+#!/bin/sh
+DAEMON=/usr/bin/svnserve
+PIDFILE=/run/svnserve.pid
+START="/usr/bin/svnserve -d -T -r /home/b00men/svn/ --pid-file /run/svnserve.pid  --log-file /var/log/svn.log"
+STOP="killall -9 /usr/bin/svnserve"
+RETVAL=0
+
+. /lib/lsb/init-functions
+
+case "$1" in
+	start)
+		$START
+		RETVAL=$?
+		;;
+	stop)
+		$STOP
+		RETVAL=$?
+		;;
+	restart)
+		$STOP
+		$START
+		RETVAL=$?
+		;;
+	status)
+		status_of_proc -p $PIDFILE $DAEMON svnserve && exit 0 || exit $?
+		;;
+	*)
+		echo "Usage: svnserve {start|stop|restart|status}"
+		exit 1
+		;;
+esac
+exit $RETVAL

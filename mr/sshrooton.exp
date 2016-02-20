@@ -1,0 +1,33 @@
+#!/usr/bin/expect
+
+# Для быстрого разрешения логина под рутом и добавление ключа.
+# Удобно использовать в глобальной задаче автоматизации подготовки серверов.
+
+# Подключается к hostname по username userpass, внутри входит в рут по rootpass,
+# разрешает вход по паролю для рута, добавляет ключ head'a, перезапускает ssh, выходит.
+
+if {[llength $argv] != 4} {
+   puts "Вызов: sshrooton.exp <hostname> <username> <userpass> <rootpass>"
+   exit 1
+ }
+set hostname [lindex $argv 0]
+set username [lindex $argv 1]
+set userpass [lindex $argv 2]
+set rootpass [lindex $argv 3]
+spawn ssh $username@$hostname
+expect "password:"
+send "$userpass\r"
+expect -re "\\$ $"
+send "su\r"
+expect "Пароль:"
+send "$rootpass\r"
+expect -re "# $"
+send "sed -i \"s/^PermitRootLogin\ without-password$/PermitRootLogin\ yes/\" /etc/ssh/sshd_config\r"
+send "mkdir -p /root/.ssh/\r"
+send "echo \"ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAunERWOEdy+V395Ra9o82kHy9PpaGirTdRLbTTjVX3g3IXtSyOvEFV67Mq5g822m1j9cUGlwaxPJ50rw3ALPmbt1THg+5vOILBivHwJN3V9mmMFzfoQfmS4wVZIkxdm9GkKH3ATuYU/fwtgUKo1cYu3gk0XB2e+gFJk6qpoS1chkMkQbEuUufX1IYAvitqSO1XMal9qPONcFCql40OlVd0/FiZoqOBmsTGLyBpyyK19e9UV4o0+18vhjM98/8CTH8U+jpVsEly+ji4azubZM2PqpNhmQjsjmlqMp8Gm01KotZw/pEIIoGrG0b8TfcIybTJZ36HfR+OVW5zZkQNh6oOw== root@head\" > /root/.ssh/authorized_keys\r"
+send "service ssh restart\r"
+send "exit\r"
+expect -re "\\$ $"
+send "logout\r"
+expect "closed."
+exit 0

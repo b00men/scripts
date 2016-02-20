@@ -1,0 +1,1 @@
+/etc/nginx/sites-available/transmission.ta6ypet.co.cc

@@ -1,0 +1,23 @@
+#!/bin/bash
+SCRIPT="/opt/games/cod4/start4.ch"
+RETVAL=0
+case "$1" in
+start)
+$SCRIPT
+RETVAL=$?
+;;
+stop)
+killall -w cod4_lnxded
+RETVAL=$?
+;;
+restart)
+killall -w cod4_lnxded
+$SCRIPT
+RETVAL=$?
+;;
+*)
+echo "Usage: sudo /etc/init.d/cod4servers {start|stop|restart}"
+exit 1
+;;
+esac
+exit $RETVAL

@@ -1,0 +1,1 @@
+/etc/nginx/sites-available/files.ta6ypet.co.cc

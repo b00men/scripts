@@ -1,0 +1,77 @@
+#!/usr/bin/env python
+"""OAuth URL Signing"""
+import sys
+import os
+import urlparse
+import cgi
+from oauth import oauth
+from optparse import OptionParser
+
+def get_signed_request(url, method, consumer, token):
+    query = urlparse.urlparse(url).query
+
+    oauth_request = oauth.OAuthRequest.from_consumer_and_token(
+            http_url=url,
+            http_method=method,
+            oauth_consumer=consumer,
+            token=token,
+            parameters=dict(cgi.parse_qsl(query))
+    )
+
+    oauth_request.sign_request(oauth.OAuthSignatureMethod_HMAC_SHA1(),
+                            consumer, token)
+
+    return oauth_request
+
+def main(options, url):
+    consumer_key = os.environ.get('OAUTH_CONSUMER_KEY',
+                                  options.consumer_key)
+    consumer_secret = os.environ.get('OAUTH_CONSUMER_SECRET',
+                                  options.consumer_secret)
+
+    token = os.environ.get('OAUTH_TOKEN', options.token)
+    token_secret = os.environ.get('OAUTH_TOKEN_SECRET',
+                               options.token_secret)
+
+    consumer = oauth.OAuthConsumer(consumer_key,
+                                consumer_secret)
+
+    token = oauth.OAuthToken(token, token_secret)
+
+    signed_request = get_signed_request(url, options.method,
+                                        consumer,token)
+
+    if options.format == "header":
+        print "Authorization: %s" % (
+            signed_request.to_header()['Authorization'])
+    elif options.format == "url":
+        print signed_request.to_url()
+
+if __name__ == "__main__":
+    parser = OptionParser(usage="%prog [-m GET] URL")
+    parser.add_option('-m', '--method', dest='method',
+                    default='GET', help='HTTP Method')
+
+    parser.add_option('-K', '--consumer-key', dest='consumer_key',
+                    default='ubuntuone', help="Consumer Key")
+    parser.add_option('-S', '--consumer-secret', dest='consumer_secret',
+                    default='hammertime', help="Consumer Secret")
+
+    parser.add_option('-k', '--token-key', dest='token',
+                    default=None, help='Token Key')
+
+    parser.add_option('-s', '--token-secret', dest='token_secret',
+                    default=None, help='Token Secret')
+
+    parser.add_option('-f', '--format', dest='format',
+                    default="header", choices=["header", "url"])
+
+    options, args = parser.parse_args()
+    
+    if len(args) != 1:
+        print "Expecting URL as the argument"
+        sys.exit(1)
+
+    url = args[0]
+    main(options, url)
+

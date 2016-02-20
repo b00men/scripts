@@ -1,0 +1,23 @@
+#!/bin/bash
+SCRIPT="/opt/games/teeworlds/starttw.ch"
+RETVAL=0
+case "$1" in
+start)
+$SCRIPT
+RETVAL=$?
+;;
+stop)
+killall -w teeworlds-server
+RETVAL=$?
+;;
+restart)
+killall -w teeworlds-server
+$SCRIPT
+RETVAL=$?
+;;
+*)
+echo "Usage: sudo /etc/init.d/teeworlds-servers {start|stop|restart}"
+exit 1
+;;
+esac
+exit $RETVAL
