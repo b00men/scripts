@@ -1,0 +1,3 @@
+mpg123 work/bolotnaya_w/solo.mp3
+sox work/bolotnaya_w/solo.mp3 -t wav -   | waon -i - -n 4096 -s 1024 -t 90 -b 40 -r 1
+timidity output.mid
