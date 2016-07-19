@@ -1,0 +1,1 @@
+sudo socat -d -d -d PTY,link=/dev/tty.netmodem0,raw,mode=666,echo=0 TCP:192.168.0.151:20108
