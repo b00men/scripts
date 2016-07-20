@@ -1,0 +1,2 @@
+dhcp-option=121,192.168.88.0/24,192.168.70.50,172.19.70.0/24,192.168.70.50,192.168.60.0/24,192.168.70.50,192.168.42.0/24,192.168.70.50
+dhcp-option=option:domain-search,lan.ta6ypet.ru,tomsk.lan.ta6ypet.ru,ta6ypet.ru,marketradio.ru
