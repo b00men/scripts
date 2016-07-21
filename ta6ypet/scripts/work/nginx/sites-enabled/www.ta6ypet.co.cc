@@ -1,1 +1,0 @@
-sites-available/www.ta6ypet.co.cc

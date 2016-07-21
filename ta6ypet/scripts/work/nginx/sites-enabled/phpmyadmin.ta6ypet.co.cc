@@ -1,1 +1,0 @@
-/etc/nginx/sites-available/phpmyadmin.ta6ypet.co.cc

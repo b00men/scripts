@@ -1,1 +1,0 @@
-/etc/nginx/sites-available/ta6ypet.co.cc
