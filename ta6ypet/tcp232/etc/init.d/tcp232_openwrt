@@ -1,0 +1,36 @@
+#!/bin/sh /etc/rc.common
+# Screen to tcp232
+
+START=99
+
+IP=192.168.42.3
+PORT=20108
+TTY=/dev/tty.lab.kem.q2p.us
+
+EXTRA_COMMANDS="status"
+EXTRA_HELP="        status  Status of state"
+
+RETVAL=0
+
+start() {
+	test -c $TTY || ( socat PTY,link=$TTY,raw,mode=666,echo=0 TCP:$IP:$PORT & sleep 1 )
+	screen -list | grep -q ttyS0 || screen -d -m -c /etc/screenrc -S ttyS0 -L $TTY
+	RETVAL=$?
+}
+
+stop() {
+	ps w | grep "socat PTY,link=$TTY,raw,mode=666,echo=0 TCP:$IP:$PORT" | grep -q -v grep && kill `ps w | grep "socat PTY,link=$TTY,raw,mode=666,echo=0 TCP:$IP:$PORT" | grep -v grep | awk '{print $1}'` || echo "already killed"
+	sleep 1
+	RETVAL=$?
+}
+
+boot() {
+	sleep 10	# Wait for rise the network
+	start
+}
+
+status() {
+	ps w | grep "socat PTY,link=$TTY,raw,mode=666,echo=0 TCP:$IP:$PORT" | grep -v grep
+	screen -list | grep ttyS0 || (echo "no ttyS0 screen" ; exit 1)
+	RETVAL=$?
+}
