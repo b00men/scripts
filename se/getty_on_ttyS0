@@ -1,0 +1,11 @@
+systemctl enable serial-getty@ttyS0.service
+sed -i 's/agetty --keep-baud/agetty -a root --keep-baud/' /lib/systemd/system/serial-getty@.service
+systemctl daemon-reload
+systemctl start serial-getty@ttyS0.service
+sed -i 's/GRUB_CMDLINE_LINUX=""/GRUB_CMDLINE_LINUX="console=tty0 console=ttyS0,115200n8"/' /etc/default/grub
+grep GRUB_TERMINAL=serial -q /etc/default/grub || echo 'GRUB_TERMINAL=serial
+GRUB_SERIAL_COMMAND="serial --speed=115200 --unit=0 --word=8 --parity=no --stop=1"' >> /etc/default/grub
+update-grub
+
+virsh list --all
+screen `virsh ttyconsole $VM_NAME`
