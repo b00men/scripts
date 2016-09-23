@@ -1,9 +1,0 @@
-Инфо
-
-Для дедиков порт  -p5525
-
-Посчитать количество клиентов с отключенным агентом:
-
-COUNT=0; for VAR in $(ls volumes/status/openvpn*); do COUNT=$(($COUNT + $(grep CLIENT_LIST $VAR | wc -l))); echo "Instance $VAR, users = $(grep CLIENT_LIST $VAR | wc -l), total = $COUNT"; done
-
-К тестцентрам цепляемся через ip из забикса с ансибла через учетку seva (sudo?)
