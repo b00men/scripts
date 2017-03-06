@@ -28,6 +28,6 @@ print "# Рабочий журнал "+beginning.strftime('%B %Y')+'\n'
 
 for i in range(5):
     print "#### "+beginning.strftime('%A %d.%m.%y')+":"
-    print "- +2h Мониторинг работоспособности серверов"
+#    print "- +2h Мониторинг работоспособности серверов"
     print "- +0h some_task\n"
     beginning += datetime.timedelta(1)
