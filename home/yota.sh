@@ -4,5 +4,6 @@
 # телефона в режиме точки доступа. В зависимости от телефона могут быть различные ttl.
 # Рекомендуется использование в связке с vpn и перенаправлением всего трафика через него. 
 # WP - 130
+# Andr - 65
 
-sudo iptables -t mangle -A POSTROUTING -j TTL --ttl-set 130
+sudo iptables -t mangle -A POSTROUTING -j TTL --ttl-set 65
