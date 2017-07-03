@@ -1,0 +1,9 @@
+iptables -t mangle -A PREROUTING -p tcp --sport 4713 -j TOS --set-tos Minimize-Delay
+iptables -t mangle -A PREROUTING -p tcp --dport 4713 -j TOS --set-tos Minimize-Delay
+iptables -A OUTPUT -t mangle -p tcp --dport 4713 -j TOS --set-tos Minimize-Delay
+iptables -A OUTPUT -t mangle -p tcp --sport 4713 -j TOS --set-tos Minimize-Delay
+
+iptables -t mangle -A PREROUTING -p tcp --sport 5001 -j TOS --set-tos Minimize-Delay
+iptables -t mangle -A PREROUTING -p tcp --dport 5001 -j TOS --set-tos Minimize-Delay
+iptables -A OUTPUT -t mangle -p tcp --dport 5001 -j TOS --set-tos Minimize-Delay
+iptables -A OUTPUT -t mangle -p tcp --sport 5001 -j TOS --set-tos Minimize-Delay
