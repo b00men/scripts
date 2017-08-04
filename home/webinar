@@ -1,0 +1,33 @@
+# check input devices
+ffmpeg -list_devices true -f openal -i dummy out.ogg
+	pulse:
+		- jabra as default in&out
+		- H4 Digital Recorder Аналоговый стерео
+		- Monitor of Jabra SPEAK 510 USB Аналоговый стерео
+		- Jabra SPEAK 510 USB Аналоговый моно
+
+# Deploy
+docker run --rm -e SECRET=screen -e WEB_PORT=9500 -e STREAM_PORT=9520 -e WEBSOCKET_PORT=9510 -p 9500:9500 -p 9510:9510 -p 9520:9520 --name jsmpeg-screen -d q2pus/jsmpeg
+docker run --rm -e SECRET=camera -e WEB_PORT=9501 -e STREAM_PORT=9521 -e WEBSOCKET_PORT=9511 -p 9501:9501 -p 9511:9511 -p 9521:9521 --name jsmpeg-cam -d q2pus/jsmpeg
+
+# Monitor recording (skype and other system sound)
+ffmpeg -f openal -i 'Monitor of Jabra SPEAK 510 USB Аналоговый стерео' /media/b00men/FOR_FOTO/test/$(date +%Y-%m-%d+%H-%M-%S)_mon.ogg
+
+# Mic recording
+ffmpeg -f openal -i 'H4 Digital Recorder Аналоговый стерео' /media/b00men/FOR_FOTO/test/$(date +%Y-%m-%d+%H-%M-%S)_mic.ogg
+
+# Screen live broadcasting and recording
+ffmpeg -f x11grab -s 1920x1080 -i :0.0+0,0 -c:v libx264 -preset ultrafast -crf 22 -c:a copy  /media/b00men/FOR_FOTO/test/$(date +%Y-%m-%d+%H-%M-%S)_screen.mkv -f mpegts -codec:v mpeg1video -s 1280x720 -b:v 1000k -bf 0 http://entrypoint:9520/screen
+
+# Cam live broadcasting and recording
+ffmpeg -f v4l2 -framerate 25 -video_size 800x600 -i /dev/video0 -c:v libx264 -preset ultrafast -crf 22 -c:a copy  /media/b00men/FOR_FOTO/test/$(date +%Y-%m-%d+%H-%M-%S)_cam.mkv  -f mpegts -codec:v mpeg1video -s 800x600 -b:v 1000k -bf 0 http://entrypoint:9521/camera
+
+-----------------------------------------
+
+# Run all in bg with timer (to stop fg and Ctrl+C)
+nohup timeout 7200 ffmpeg -f openal -i 'Monitor of Jabra SPEAK 510 USB Аналоговый стерео' /media/b00men/FOR_FOTO/test/$(date +%Y-%m-%d+%H-%M-%S)_mon.ogg >/dev/null &
+nohup timeout 7200 ffmpeg -f openal -i 'H4 Digital Recorder Аналоговый стерео' /media/b00men/FOR_FOTO/test/$(date +%Y-%m-%d+%H-%M-%S)_mic.ogg >/dev/null &
+nohup timeout 7200 ffmpeg -f x11grab -s 1920x1080 -i :0.0+0,0 -c:v libx264 -preset ultrafast -crf 22 -c:a copy  /media/b00men/FOR_FOTO/test/$(date +%Y-%m-%d+%H-%M-%S)_screen.mkv -f mpegts -codec:v mpeg1video -s 1280x720 -b:v 1000k -bf 0 http://entrypoint:9520/screen >/dev/null &
+nohup timeout 7200 ffmpeg -f v4l2 -framerate 25 -video_size 800x600 -i /dev/video0 -c:v libx264 -preset ultrafast -crf 22 -c:a copy  /media/b00men/FOR_FOTO/test/$(date +%Y-%m-%d+%H-%M-%S)_cam.mkv  -f mpegts -codec:v mpeg1video -s 800x600 -b:v 1000k -bf 0 http://entrypoint:9521/camera >/dev/null &
+#
+# to copy
